@@ -1,5 +1,6 @@
 # python
 from typing import Optional
+from unittest import result
 # pydantic para crear modelos
 from pydantic import BaseModel
 # fastapi
@@ -19,7 +20,10 @@ class Persona(BaseModel):
     # valores opcionales y define que va a recibir si es que se envia
     hair_color: Optional[str] = None
     is_married: Optional[bool] = None
-
+class Location(BaseModel):
+    ciudad: str
+    estado: str
+    pais: str
 
 @app.get("/v1/")
 def home():
@@ -74,3 +78,28 @@ def showPerson(
 ):
     #retornamos el id obtenido y mostramos que si existe 
     return {person_id: "existe"}
+
+
+#request body modifica a un usuario con put
+@app.put("/person/{person_id}")
+#definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
+#igual, si es caso se necesita, recibe la locacion de la persona
+
+#decimos que body es obligario para person y que debe ser una instancia de persona asi como location
+def update_person(
+    person_id: int = Path(
+        ...,
+        title="id persona",
+        description="este es el id de la persona",
+        gt=0,
+    ),
+    person: Persona = Body(...),
+    location: Location = Body(...),
+):
+    #el resultado es un diccionario que une a dos diccionarios, el person y location
+    #primero convierte el json a un diccionario y guarda en results
+    results = person.dic()
+    #segundo convierte el json a un diccionario y guarda en results actualizando con update
+    results.update(location.dic())
+    #retornamos el resultado
+    return results
