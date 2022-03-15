@@ -7,6 +7,7 @@ from enum import Enum
 from pydantic import BaseModel
 from pydantic import Field
 
+
 # fastapi
 from fastapi import Body, Query, Path
 from fastapi import FastAPI
@@ -16,7 +17,9 @@ app = FastAPI()
 
 # modelos
 
-#clase que es como metodo para validar el color de cabellos
+# clase que es como metodo para validar el color de cabellos
+
+
 class ColorCabello(Enum):
     white = "blanco"
     black = "negro"
@@ -25,15 +28,28 @@ class ColorCabello(Enum):
     rojo = "rojo"
 
 
-#uso de Field  para validar los datos de la clase
+# uso de Field  para validar los datos de la clase
 class Persona(BaseModel):
-    name: str = Field(..., min_length=1, max_length=50)
-    last_name: str = Field(..., min_length=1, max_length=50)
-    age: int = Field(..., gt=0, Le=150)
+    name: str = Field(..., min_length=1, max_length=50, example="Juan")
+    last_name: str = Field(..., min_length=1, max_length=50, example="Perez")
+    age: int = Field(..., gt=0, Le=150, example=20)
     # valores opcionales y define que va a recibir si es que se envia, en hair_color se coloca como
-    #parametro solo los que tiene la clase ColorCabello
-    hair_color: Optional[ColorCabello] = Field(default= None)
-    is_married: Optional[bool] = Field(default=None)
+    # parametro solo los que tiene la clase ColorCabello
+    hair_color: Optional[ColorCabello] = Field(default=None, example="rojo")
+    is_married: Optional[bool] = Field(default=None, example=False)
+
+
+# clase para que sea el ejemplo con los datos de la persona ficticia
+'''     class Config:
+        schema_extra = {
+            "example": {
+                "name": "Wiliams Alexander",
+                "last_name": "Tzoc Ixcoy",
+                "age": 25,
+                "hair_color": "negro",
+                "is_married": False
+            }
+        } '''
 
 
 class Location(BaseModel):
@@ -112,12 +128,13 @@ def update_person(
         gt=0,
     ),
     person: Persona = Body(...),
-    location: Location = Body(...),
+    #location: Location = Body(...),
 ):
     # el resultado es un diccionario que une a dos diccionarios, el person y location
     # primero convierte el json a un diccionario y guarda en results
-    results = person.dict()
+    #results = person.dict()
     # segundo convierte el json a un diccionario y guarda en results actualizando con update
-    results.update(location.dict())
+  #  results.update(location.dict())
     # retornamos el resultado
-    return results
+    # return results
+    return {"person_id": person_id, "person": person}
