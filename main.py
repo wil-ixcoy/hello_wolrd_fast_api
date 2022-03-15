@@ -1,8 +1,12 @@
 # python
 from typing import Optional
-from unittest import result
+# sirve para crear enumeraciones de strings
+from enum import Enum
+
 # pydantic para crear modelos
 from pydantic import BaseModel
+from pydantic import Field
+
 # fastapi
 from fastapi import Body, Query, Path
 from fastapi import FastAPI
@@ -12,18 +16,31 @@ app = FastAPI()
 
 # modelos
 
+#clase que es como metodo para validar el color de cabellos
+class ColorCabello(Enum):
+    white = "blanco"
+    black = "negro"
+    brown = "cafes"
+    rubio = "rubio"
+    rojo = "rojo"
 
+
+#uso de Field  para validar los datos de la clase
 class Persona(BaseModel):
-    name: str
-    last_name: str
-    age: int
-    # valores opcionales y define que va a recibir si es que se envia
-    hair_color: Optional[str] = None
-    is_married: Optional[bool] = None
+    name: str = Field(..., min_length=1, max_length=50)
+    last_name: str = Field(..., min_length=1, max_length=50)
+    age: int = Field(..., gt=0, Le=150)
+    # valores opcionales y define que va a recibir si es que se envia, en hair_color se coloca como
+    #parametro solo los que tiene la clase ColorCabello
+    hair_color: Optional[ColorCabello] = Field(default= None)
+    is_married: Optional[bool] = Field(default=None)
+
+
 class Location(BaseModel):
     ciudad: str
     estado: str
     pais: str
+
 
 @app.get("/v1/")
 def home():
@@ -64,10 +81,12 @@ def showPerson(
 
 # validaciones path parameters
 
-#usamos get para obtener detalles de una persona por id
+# usamos get para obtener detalles de una persona por id
+
+
 @app.get("/person/detail/{person_id}")
-#definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
-#para query parameters y path parameters
+# definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
+# para query parameters y path parameters
 def showPerson(
     person_id: int = Path(
         ...,
@@ -76,16 +95,15 @@ def showPerson(
         despcriotion="este es el id de la persona, debe ser mayor a 0"
     )
 ):
-    #retornamos el id obtenido y mostramos que si existe 
+    # retornamos el id obtenido y mostramos que si existe
     return {person_id: "existe"}
 
 
-#request body modifica a un usuario con put
+# request body modifica a un usuario con put
 @app.put("/person/{person_id}")
-#definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
-#igual, si es caso se necesita, recibe la locacion de la persona
-
-#decimos que body es obligario para person y que debe ser una instancia de persona asi como location
+# definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
+# igual, si es caso se necesita, recibe la locacion de la persona
+# decimos que body es obligario para person y que debe ser una instancia de persona asi como location
 def update_person(
     person_id: int = Path(
         ...,
@@ -96,10 +114,10 @@ def update_person(
     person: Persona = Body(...),
     location: Location = Body(...),
 ):
-    #el resultado es un diccionario que une a dos diccionarios, el person y location
-    #primero convierte el json a un diccionario y guarda en results
-    results = person.dic()
-    #segundo convierte el json a un diccionario y guarda en results actualizando con update
-    results.update(location.dic())
-    #retornamos el resultado
+    # el resultado es un diccionario que une a dos diccionarios, el person y location
+    # primero convierte el json a un diccionario y guarda en results
+    results = person.dict()
+    # segundo convierte el json a un diccionario y guarda en results actualizando con update
+    results.update(location.dict())
+    # retornamos el resultado
     return results
