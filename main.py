@@ -83,17 +83,19 @@ def showPerson(
         min_length=1,
         max_length=50,
         title="Nombre de la persona",
-        description="este es el nombre de la persona, debe tener entre 1 y 50 caracteres"
+        description="este es el nombre de la persona, debe tener entre 1 y 50 caracteres",
+        example="Rocio"
     ),
-    age: Optional[str] = Query(
+    age: Optional[int] = Query(
         None,
-        min_length=1,
-        max_length=3,
+        gt=0,
         title="Edad de la persona",
-        description="este es la edad de la persona, debe tener entre 1 y 3 caracteres"
+        description="este es la edad de la persona, debe tener entre 1 y 3 caracteres",
+        example=22
     )
 ):
     return {"name": name, "age": age}
+
 
 # validaciones path parameters
 
@@ -108,7 +110,8 @@ def showPerson(
         ...,
         gt=0,
         title="Id de la persona",
-        despcriotion="este es el id de la persona, debe ser mayor a 0"
+        despcriotion="este es el id de la persona, debe ser mayor a 0",
+        example="Rocio"
     )
 ):
     # retornamos el id obtenido y mostramos que si existe
@@ -126,6 +129,7 @@ def update_person(
         title="id persona",
         description="este es el id de la persona",
         gt=0,
+        example=12
     ),
     person: Persona = Body(...),
     #location: Location = Body(...),
