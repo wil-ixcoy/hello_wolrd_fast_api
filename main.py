@@ -6,12 +6,13 @@ from enum import Enum
 # pydantic para crear modelos
 from pydantic import BaseModel
 from pydantic import Field
-
+#modulos propios
+from models.Persona import Persona
+from models.PersonaOut import PersonaOut
 
 # fastapi
 from fastapi import Body, Query, Path
 from fastapi import FastAPI
-from models.Persona import Persona
 
 # creamos una instancia de fastapi
 app = FastAPI()
@@ -34,7 +35,7 @@ def home():
 # request and response body
 
 
-@app.post("/person/new")
+@app.post("/person/new",response_model=PersonaOut)
 # request body person: Persona
 # el triple punto dice que el parametro o atributo es obligatorio
 def create_person(person: Persona = Body(...)):
