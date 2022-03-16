@@ -7,10 +7,11 @@ from pydantic import BaseModel
 #modulos propios
 from models.Persona import Persona
 from models.PersonaOut import PersonaOut
+from models.LoginOut import LoginOut
 
 # fastapi
 from fastapi import status
-from fastapi import Body, Query, Path
+from fastapi import Body, Query, Path, Form
 from fastapi import FastAPI
 
 # creamos una instancia de fastapi
@@ -112,3 +113,10 @@ def update_person(
     # retornamos el resultado
     # return results
     return {"person_id": person_id, "person": person}
+
+#desde /login de tipo post, respondemos con el modelo LoginOut, aca se espera el nombre de usuario
+#contraseña de tipo Form
+@app.post("/login",response_model=LoginOut, status_code=status.HTTP_200_OK)
+def login(username:str = Form(...),password:str = Form(...)):
+    #retornamos a loginOut creando una instnacia de username para que puede ser devuelta como json
+    return LoginOut(username=username)
