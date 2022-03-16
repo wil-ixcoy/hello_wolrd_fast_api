@@ -34,7 +34,8 @@ def home():
 
 # request and response body
 
-
+#response_model = PersonaOut quiere decir que crea y usa una clase distinta(en este caso persona)
+#y muestra como respuesta a otra(en este caso personaout)
 @app.post("/person/new",response_model=PersonaOut)
 # request body person: Persona
 # el triple punto dice que el parametro o atributo es obligatorio

@@ -1,15 +1,9 @@
-from pydantic import BaseModel
-from pydantic import Field
-from typing import Optional
-
-from models.RasgosPersona import ColorCabello
+#se importa a PersonaBase que es la clase que hereda
+#aPersonaOut
+from models.PersonaBase import PersonaBase
 
 
-class PersonaOut(BaseModel):
-    name: str = Field(..., min_length=1, max_length=50, example="Juan")
-    last_name: str = Field(..., min_length=1, max_length=50, example="Perez")
-    age: int = Field(..., gt=0, Le=150, example=20)
-    # valores opcionales y define que va a recibir si es que se envia, en hair_color se coloca como
-    # parametro solo los que tiene la clase ColorCabello
-    hair_color: Optional[ColorCabello] = Field(default=None, example="rojo")
-    is_married: Optional[bool] = Field(default=None, example=False)
+#como no necesita nada mas qeu lo de la clase padre
+#se coloca pass
+class PersonaOut(PersonaBase):
+    pass
