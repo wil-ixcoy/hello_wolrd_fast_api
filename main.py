@@ -4,14 +4,15 @@ from typing import Optional
 
 # pydantic para crear modelos
 from pydantic import BaseModel
-#modulos propios
+from pydantic import EmailStr
+# modulos propios
 from models.Persona import Persona
 from models.PersonaOut import PersonaOut
 from models.LoginOut import LoginOut
 
 # fastapi
 from fastapi import status
-from fastapi import Body, Query, Path, Form
+from fastapi import Body, Query, Path, Form, Header, Cookie, File, UploadFile
 from fastapi import FastAPI
 
 # creamos una instancia de fastapi
@@ -28,15 +29,17 @@ class Location(BaseModel):
     pais: str
 
 
-@app.get("/",status_code=status.HTTP_200_OK)
+@app.get("/", status_code=status.HTTP_200_OK)
 def home():
     return {"message": "Hello World"}
 
 # request and response body
 
-#response_model = PersonaOut quiere decir que crea y usa una clase distinta(en este caso persona)
-#y muestra como respuesta a otra(en este caso personaout)
-@app.post("/person/new",response_model=PersonaOut,status_code=status.HTTP_201_CREATED)
+# response_model = PersonaOut quiere decir que crea y usa una clase distinta(en este caso persona)
+# y muestra como respuesta a otra(en este caso personaout)
+
+
+@app.post("/person/new", response_model=PersonaOut, status_code=status.HTTP_201_CREATED)
 # request body person: Persona
 # el triple punto dice que el parametro o atributo es obligatorio
 def create_person(person: Persona = Body(...)):
@@ -73,7 +76,7 @@ def showPerson(
 # usamos get para obtener detalles de una persona por id
 
 
-@app.get("/person/detail/{person_id}",status_code=status.HTTP_200_OK)
+@app.get("/person/detail/{person_id}", status_code=status.HTTP_200_OK)
 # definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
 # para query parameters y path parameters
 def showPerson(
@@ -114,9 +117,25 @@ def update_person(
     # return results
     return {"person_id": person_id, "person": person}
 
-#desde /login de tipo post, respondemos con el modelo LoginOut, aca se espera el nombre de usuario
-#contraseña de tipo Form
-@app.post("/login",response_model=LoginOut, status_code=status.HTTP_200_OK)
-def login(username:str = Form(...),password:str = Form(...)):
-    #retornamos a loginOut creando una instnacia de username para que puede ser devuelta como json
+# desde /login de tipo post, respondemos con el modelo LoginOut, aca se espera el nombre de usuario
+# contraseña de tipo Form
+
+
+@app.post("/login", response_model=LoginOut, status_code=status.HTTP_200_OK)
+def login(username: str = Form(...), password: str = Form(...)):
+    # retornamos a loginOut creando una instnacia de username para que puede ser devuelta como json
     return LoginOut(username=username)
+
+# cookies and headers parameters
+
+#uso de cookies y hader tambien se valida el email con EmailStr
+@app.post("/contact", status_code=status.HTTP_200_OK)
+def Contact(
+    name: str = Form(..., max_length=20, min_length=3),
+    lastname: str = Form(..., max_length=20, min_length=3),
+    email: EmailStr = Form(...),
+    message: str = Form(...),
+    user_agent: Optional[str] = Header(default=None),
+    ads_visits: Optional[str] = Cookie(default=None),
+):
+    return {"name": name,"lastname":lastname, "email": email, "message": message, "user_agent": user_agent, "ads_visits": ads_visits}
