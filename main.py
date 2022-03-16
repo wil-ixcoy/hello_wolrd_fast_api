@@ -1,16 +1,15 @@
 # python
 from typing import Optional
 # sirve para crear enumeraciones de strings
-from enum import Enum
 
 # pydantic para crear modelos
 from pydantic import BaseModel
-from pydantic import Field
 #modulos propios
 from models.Persona import Persona
 from models.PersonaOut import PersonaOut
 
 # fastapi
+from fastapi import status
 from fastapi import Body, Query, Path
 from fastapi import FastAPI
 
@@ -28,7 +27,7 @@ class Location(BaseModel):
     pais: str
 
 
-@app.get("/v1/")
+@app.get("/",status_code=status.HTTP_200_OK)
 def home():
     return {"message": "Hello World"}
 
@@ -36,7 +35,7 @@ def home():
 
 #response_model = PersonaOut quiere decir que crea y usa una clase distinta(en este caso persona)
 #y muestra como respuesta a otra(en este caso personaout)
-@app.post("/person/new",response_model=PersonaOut)
+@app.post("/person/new",response_model=PersonaOut,status_code=status.HTTP_201_CREATED)
 # request body person: Persona
 # el triple punto dice que el parametro o atributo es obligatorio
 def create_person(person: Persona = Body(...)):
@@ -45,7 +44,7 @@ def create_person(person: Persona = Body(...)):
 # validations query parameters
 
 
-@app.get("/person/detail")
+@app.get("/person/detail", status_code=status.HTTP_200_OK)
 # se define un paramatro para el query en donde el nombre y la edad estan condicionados
 # por Query que limita el minimo y maximo de caracteres
 def showPerson(
@@ -73,7 +72,7 @@ def showPerson(
 # usamos get para obtener detalles de una persona por id
 
 
-@app.get("/person/detail/{person_id}")
+@app.get("/person/detail/{person_id}",status_code=status.HTTP_200_OK)
 # definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
 # para query parameters y path parameters
 def showPerson(
@@ -90,7 +89,7 @@ def showPerson(
 
 
 # request body modifica a un usuario con put
-@app.put("/person/{person_id}")
+@app.put("/person/{person_id}", status_code=status.HTTP_200_OK)
 # definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
 # igual, si es caso se necesita, recibe la locacion de la persona
 # decimos que body es obligario para person y que debe ser una instancia de persona asi como location
