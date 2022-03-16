@@ -128,7 +128,9 @@ def login(username: str = Form(...), password: str = Form(...)):
 
 # cookies and headers parameters
 
-#uso de cookies y hader tambien se valida el email con EmailStr
+# uso de cookies y hader tambien se valida el email con EmailStr
+
+
 @app.post("/contact", status_code=status.HTTP_200_OK)
 def Contact(
     name: str = Form(..., max_length=20, min_length=3),
@@ -138,4 +140,17 @@ def Contact(
     user_agent: Optional[str] = Header(default=None),
     ads_visits: Optional[str] = Cookie(default=None),
 ):
-    return {"name": name,"lastname":lastname, "email": email, "message": message, "user_agent": user_agent, "ads_visits": ads_visits}
+    return {"name": name, "lastname": lastname, "email": email, "message": message, "user_agent": user_agent, "ads_visits": ads_visits}
+
+# files
+
+
+@app.post("/post-image", status_code=status.HTTP_200_OK)
+#subida de una imagen esperando como parametro una imagen usando las clases File y UploadFile
+def post_image(image: UploadFile = File(...)):
+    #retornamos el nombre de la imagen, el tipo y el tamaño
+    return {
+        "filename": image.filename,
+        "format": image.content_type,
+        "Size(kb)": round(len(image.file.read()) / 1024, ndigits=2)
+    }
