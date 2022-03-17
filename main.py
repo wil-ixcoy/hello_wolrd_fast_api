@@ -68,8 +68,8 @@ def create_person(person: Persona = Body(...)):
 
 # validations query parameters
 
-
-@app.get("/person/detail", status_code=status.HTTP_200_OK,tags=["persona"])
+#usamos deprecated=True para deprecar el path operation
+@app.get("/person/detail", status_code=status.HTTP_200_OK,tags=["persona"],deprecated=True)
 # se define un paramatro para el query en donde el nombre y la edad estan condicionados
 # por Query que limita el minimo y maximo de caracteres
 def showPerson(
@@ -79,7 +79,8 @@ def showPerson(
         max_length=50,
         title="Nombre de la persona",
         description="este es el nombre de la persona, debe tener entre 1 y 50 caracteres",
-        example="Rocio"
+        example="Rocio",
+        
     ),
     age: Optional[int] = Query(
         None,
