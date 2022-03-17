@@ -41,10 +41,29 @@ def home():
 # y muestra como respuesta a otra(en este caso personaout)
 
 
-@app.post("/person/new", response_model=PersonaOut, status_code=status.HTTP_201_CREATED, tags=["persona"])
+@app.post(
+    "/person/new", 
+    response_model=PersonaOut, 
+    status_code=status.HTTP_201_CREATED, 
+    tags=["persona"],
+    summary="Crea una nueva persona",
+    )
 # request body person: Persona
 # el triple punto dice que el parametro o atributo es obligatorio
 def create_person(person: Persona = Body(...)):
+    """
+    NombreFuncion: create_person
+    
+    Esta path operation crea una persona y lo guarda en la base de datos
+    
+    Paramentros:
+    -Request Body parameter:
+        -**person: Persona** -> uso del Modelo persona,ESte tiene, nombre, apellido, edad, color de cabello, y si esta casado
+    
+    Respuesta:
+    return el modelo de persona con los datos de la persona que se creo, nombre, apellido, edad, color de cabello, y si esta casado
+    
+    """
     return person
 
 # validations query parameters
