@@ -41,7 +41,7 @@ def home():
 # y muestra como respuesta a otra(en este caso personaout)
 
 
-@app.post("/person/new", response_model=PersonaOut, status_code=status.HTTP_201_CREATED)
+@app.post("/person/new", response_model=PersonaOut, status_code=status.HTTP_201_CREATED, tags=["persona"])
 # request body person: Persona
 # el triple punto dice que el parametro o atributo es obligatorio
 def create_person(person: Persona = Body(...)):
@@ -50,7 +50,7 @@ def create_person(person: Persona = Body(...)):
 # validations query parameters
 
 
-@app.get("/person/detail", status_code=status.HTTP_200_OK)
+@app.get("/person/detail", status_code=status.HTTP_200_OK,tags=["persona"])
 # se define un paramatro para el query en donde el nombre y la edad estan condicionados
 # por Query que limita el minimo y maximo de caracteres
 def showPerson(
@@ -80,7 +80,7 @@ def showPerson(
 personas = [1, 2, 3, 4, 5]
 
 
-@app.get("/person/detail/{person_id}", status_code=status.HTTP_200_OK)
+@app.get("/person/detail/{person_id}", status_code=status.HTTP_200_OK,tags=["persona"])
 # definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
 # para query parameters y path parameters
 def showPerson(
@@ -92,7 +92,7 @@ def showPerson(
         example=1
     )
 ):
-    #comparamos que el id enviado este en personas
+    # comparamos que el id enviado este en personas
     if person_id not in personas:
         # elevamos una excepcion https para mostrar el error 404 por que no existe el id
         raise HTTPException(
@@ -101,7 +101,7 @@ def showPerson(
 
 
 # request body modifica a un usuario con put
-@app.put("/person/{person_id}", status_code=status.HTTP_200_OK)
+@app.put("/person/{person_id}", status_code=status.HTTP_200_OK,tags=["persona"])
 # definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
 # igual, si es caso se necesita, recibe la locacion de la persona
 # decimos que body es obligario para person y que debe ser una instancia de persona asi como location
@@ -129,7 +129,7 @@ def update_person(
 # contraseña de tipo Form
 
 
-@app.post("/login", response_model=LoginOut, status_code=status.HTTP_200_OK)
+@app.post("/login", response_model=LoginOut, status_code=status.HTTP_200_OK,tags=["login"])
 def login(username: str = Form(...), password: str = Form(...)):
     # retornamos a loginOut creando una instnacia de username para que puede ser devuelta como json
     return LoginOut(username=username)
@@ -139,7 +139,7 @@ def login(username: str = Form(...), password: str = Form(...)):
 # uso de cookies y hader tambien se valida el email con EmailStr
 
 
-@app.post("/contact", status_code=status.HTTP_200_OK)
+@app.post(",/contact", status_code=status.HTTP_200_OK,tags=["contact"])
 def Contact(
     name: str = Form(..., max_length=20, min_length=3),
     lastname: str = Form(..., max_length=20, min_length=3),
@@ -153,7 +153,7 @@ def Contact(
 # files
 
 
-@app.post("/post-image", status_code=status.HTTP_200_OK)
+@app.post("/post-image", status_code=status.HTTP_200_OK,tags=["tweet"])
 # subida de una imagen esperando como parametro una imagen usando las clases File y UploadFile
 def post_image(image: UploadFile = File(...)):
     # retornamos el nombre de la imagen, el tipo y el tamaño
