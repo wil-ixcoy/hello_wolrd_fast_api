@@ -182,3 +182,5 @@ def post_image(image: UploadFile = File(...)):
         "format": image.content_type,
         "Size(kb)": round(len(image.file.read()) / 1024, ndigits=2)
     }
+
+#FIN
