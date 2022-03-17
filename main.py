@@ -31,7 +31,7 @@ class Location(BaseModel):
     pais: str
 
 
-@app.get("/", status_code=status.HTTP_200_OK)
+@app.get("/", status_code=status.HTTP_200_OK,tags=["home"])
 def home():
     return {"message": "Hello World"}
 
