@@ -5,6 +5,7 @@ from typing import Optional
 # pydantic para crear modelos
 from pydantic import BaseModel
 from pydantic import EmailStr
+
 # modulos propios
 from models.Persona import Persona
 from models.PersonaOut import PersonaOut
@@ -12,6 +13,7 @@ from models.LoginOut import LoginOut
 
 # fastapi
 from fastapi import status
+from fastapi import HTTPException
 from fastapi import Body, Query, Path, Form, Header, Cookie, File, UploadFile
 from fastapi import FastAPI
 
@@ -75,6 +77,8 @@ def showPerson(
 
 # usamos get para obtener detalles de una persona por id
 
+personas = [1, 2, 3, 4, 5]
+
 
 @app.get("/person/detail/{person_id}", status_code=status.HTTP_200_OK)
 # definimos que debe el id a recibir debe ser mayor a 0 con gt=0, esta es una funcion que aplica
@@ -85,10 +89,14 @@ def showPerson(
         gt=0,
         title="Id de la persona",
         despcriotion="este es el id de la persona, debe ser mayor a 0",
-        example="Rocio"
+        example=1
     )
 ):
-    # retornamos el id obtenido y mostramos que si existe
+    #comparamos que el id enviado este en personas
+    if person_id not in personas:
+        # elevamos una excepcion https para mostrar el error 404 por que no existe el id
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Persona no encontrada")
     return {person_id: "existe"}
 
 
@@ -146,9 +154,9 @@ def Contact(
 
 
 @app.post("/post-image", status_code=status.HTTP_200_OK)
-#subida de una imagen esperando como parametro una imagen usando las clases File y UploadFile
+# subida de una imagen esperando como parametro una imagen usando las clases File y UploadFile
 def post_image(image: UploadFile = File(...)):
-    #retornamos el nombre de la imagen, el tipo y el tamaño
+    # retornamos el nombre de la imagen, el tipo y el tamaño
     return {
         "filename": image.filename,
         "format": image.content_type,
